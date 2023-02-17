@@ -6,6 +6,8 @@ import {
   badRequestHandler,
   notFoundHandler,
   genericErrorHandler,
+  unauthorizedHandler,
+  forbiddenHandler,
 } from "./errorHandlers.js";
 import usersRouter from "./api/users/index.js";
 import accommodationRouter from "./api/accommodation/index.js";
@@ -13,6 +15,7 @@ import accommodationRouter from "./api/accommodation/index.js";
 const server = express();
 const port = process.env.PORT;
 
+//middlewares
 server.use(cors());
 server.use(express.json());
 
@@ -20,10 +23,14 @@ server.use(express.json());
 server.use("/users", usersRouter);
 server.use("/accommodation", accommodationRouter);
 
+// error handlers
 server.use(badRequestHandler);
+server.use(unauthorizedHandler);
+server.use(forbiddenHandler);
 server.use(notFoundHandler);
 server.use(genericErrorHandler);
 
+//db
 mongoose.connect(process.env.MONGO_URL);
 
 mongoose.connection.on("connected", () => {
